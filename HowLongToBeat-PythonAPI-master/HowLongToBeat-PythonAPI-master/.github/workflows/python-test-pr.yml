@@ -1,0 +1,29 @@
+# This workflows will test the dev version of the API when pushed on github
+
+name: Python Test Github Community
+
+on:
+  [pull_request, discussion, issues]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        cd howlongtobeatpy
+        python -m pip install --upgrade pip
+        pip install -U pytest pytest-cov
+        pip install .
+    - name: Test
+      run: pytest --cov=howlongtobeatpy --cov-report=xml

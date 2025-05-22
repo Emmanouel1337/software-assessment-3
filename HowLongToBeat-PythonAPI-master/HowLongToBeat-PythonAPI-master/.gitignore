@@ -1,0 +1,16 @@
+
+\.idea/
+
+howlongtobeatpy/dist/
+
+howlongtobeatpy/tests/__pycache__/
+
+howlongtobeatpy/howlongtobeatpy/__pycache__/
+
+howlongtobeatpy/howlongtobeatpy\.egg-info/
+
+\.scannerwork/
+
+howlongtobeatpy/tests/test_normal_request_debug\.py
+
+howlongtobeatpy/build/

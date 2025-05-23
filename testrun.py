@@ -14,7 +14,7 @@ def readOwnedGames():
         cursor.execute(sqlite_select_query)
         records = cursor.fetchall()
         for row in records:
-            print("Name: ", row[0], "Minutes: ", row[1])
+            print("Name: ", row[0], "\nMinutes: ", row[1])
             print('\n')
 
         cursor.close()
@@ -25,12 +25,12 @@ def readOwnedGames():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("The SQLite connection is closed")
+            print("------------------------------------------------")
 
 readOwnedGames()
 
-results = HowLongToBeat(input_auto_filter_times = True).search(game_name)
-
+results = HowLongToBeat(input_auto_filter_times = True).search('Apex Legends')
+print("Average time to beat:\n")
 if results:
     for entry in results:
         print(f"Main: {entry.mp_time}")

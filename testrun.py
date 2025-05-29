@@ -1,7 +1,8 @@
 import sqlite3
 from howlongtobeatpy import HowLongToBeat
+import asyncio
 
-def readOwnedGames():
+async def readOwnedGames():
 #connecting to table
     try:
         sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games.db')
@@ -28,26 +29,29 @@ def readOwnedGames():
             for i in check_ord:
                 game = game.replace(i, '')
             print('\n')
+            game_to_check = game.lower()
         #getting the HowLongToBeat API and querying that, then printing the information, depending on if it is singleplayer or multiplayer
-            results = HowLongToBeat(input_auto_filter_times = True).search(game)
-            print("Average time to beat:\n")
-            if results:
-                for entry in results:
-                    #checking if the game is single player / co-op, or multiplayer
-                    if entry.complexity_lvl_sp == True:
+            results_list = await HowLongToBeat().async_search(game_to_check)
+            if results_list:
+                best_element = max(results_list, key=lambda element: element.similarity)
+                if best_element.similarity >= 0.3:
+                    print("Average time to beat:\n")
+            #checking if the game is single player / co-op, or multiplayer
+                    if best_element.complexity_lvl_sp == True:
                         print('Game is singleplayer')
-                        print(f'Main Story hours: {entry.main_story}')
-                        print(f'Completionist hours: {entry.completionist}')
-                        break
-                    if entry.complexity_lvl_mp == True:
+                        print(f'Main Story hours: {best_element.main_story}')
+                        print(f'Completionist hours: {best_element.completionist}')
+                        print('------------------------------------------------------------------------------------\n')
+                    if best_element.complexity_lvl_mp == True:
                         print('Game is multiplayer')
-                        print(f'Avg invested multiplayer hours: {entry.mp_time}')
-                        break
-                    break
+                        print(f'Avg invested multiplayer hours: {best_element.mp_time}')
+                        print('------------------------------------------------------------------------------------\n')
+                else:
+                    print(f"low similarity {best_element.similarity} for {game}")
+            else:
+                print('no results found')
                 print('------------------------------------------------------------------------------------\n')
         cursor.close()
-        #NEXT - check results, if no result from howlongtobeat, check for similarity? probably using SequenceMatcher from difflib. Either like Creative Destruction (no data), or Bleach Brave Souls (names different to a higher degree), maybe just use similarity?
-        #still if similarity below 0.8 or 0.7, notify user for game which was unable to have data gathered
 
 #just incase an error occurs
     except sqlite3.Error as error:
@@ -57,5 +61,5 @@ def readOwnedGames():
             sqliteConnection.close()
             print("------------------------------------------------")
 
-readOwnedGames()
+asyncio.run(readOwnedGames())
 

@@ -5,7 +5,7 @@ import asyncio
 async def readOwnedGames():
 #connecting to table
     try:
-        sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games.db')
+        sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games2.db')
         cursor = sqliteConnection.cursor()
         print('connected')
 #generating query, printing query
@@ -16,22 +16,21 @@ async def readOwnedGames():
         for row in records:
             print("Name: ", row[0], "\nMinutes: ", row[1])
         #getting the game names, and then sorting them into something that HowLongToBeat can utilise to search from
-            gamelist = list(row[0])
+            game = row[0]
             count = 0
             check_ord = []
-            for j in gamelist:
-                if ord(j) > 126 or ord(j) < 32:
-                    check_ord.append(j)
+            for char in game:
+                if ord(char) > 126 or ord(char) < 32:
+                    check_ord.append(char)
                 else:
                     pass
                 count+=1
-            game = ''.join(gamelist)
             for i in check_ord:
                 game = game.replace(i, '')
             print('\n')
-            game_to_check = game.lower()
+            game = game.lower()
         #getting the HowLongToBeat API and querying that, then printing the information, depending on if it is singleplayer or multiplayer
-            results_list = await HowLongToBeat().async_search(game_to_check)
+            results_list = await HowLongToBeat().async_search(game)
             if results_list:
                 best_element = max(results_list, key=lambda element: element.similarity)
                 if best_element.similarity >= 0.3:

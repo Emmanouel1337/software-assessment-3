@@ -5,18 +5,38 @@ import asyncio
 async def readOwnedGames():
 #connecting to table
     try:
-        sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games2.db')
+        sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games.db')
         cursor = sqliteConnection.cursor()
-        print('connected')
-#generating query, printing query
-        sqlite_select_query = f"""SELECT name, playtime_forever FROM owned_games"""
+
+        sqliteConnection2 = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/player_summary.db')
+        cursor2 = sqliteConnection2.cursor()
+
+        sqlite_select_query2 = f"""SELECT personaname, profileurl, avatar FROM player_summaries"""
+        cursor2.execute(sqlite_select_query2)
+        records2 = cursor2.fetchall()
+
+        conn = sqlite3.connect('fulldatabase.db')
+        c = conn.cursor()
+        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, completionist FLOAT, mp_time FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
+
+        sqlite_select_query = f"""SELECT name, playtime_forever, img_logo_url FROM owned_games"""
         cursor.execute(sqlite_select_query)
         records = cursor.fetchall()
+
+        for row in records2:
+            personaname = row[0]
+            profileurl = row[1]
+            avatar = row[2]
+
+        print('connected')
+
     #printing out name and minutes played
         for row in records:
-            print("Name: ", row[0], "\nMinutes: ", row[1])
-        #getting the game names, and then sorting them into something that HowLongToBeat can utilise to search from
+            hours = round(int(row[1]) / 60, 1)
             game = row[0]
+            img_logo_url = row[2]
+            print("Name: ", game, "\nHours: ", hours)
+        #getting the game names, and then sorting them into something that HowLongToBeat can utilise to search from
             count = 0
             check_ord = []
             for char in game:
@@ -40,10 +60,14 @@ async def readOwnedGames():
                         print('Game is singleplayer')
                         print(f'Main Story hours: {best_element.main_story}')
                         print(f'Completionist hours: {best_element.completionist}')
+                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, hours, img_logo_url))
+                        conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                     if best_element.complexity_lvl_mp == True:
                         print('Game is multiplayer')
                         print(f'Avg invested multiplayer hours: {best_element.mp_time}')
+                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, mp_time, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.mp_time, hours, img_logo_url))
+                        conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                 else:
                     print(f"low similarity {best_element.similarity} for {game}")

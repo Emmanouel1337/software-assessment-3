@@ -17,7 +17,7 @@ async def readOwnedGames():
 
         conn = sqlite3.connect('fulldatabase.db')
         c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, completionist FLOAT, mp_time FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
+        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_completionist_user FLOAT, mp_time FLOAT, completionist FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
 
         sqlite_select_query = f"""SELECT name, playtime_forever, img_logo_url FROM owned_games"""
         cursor.execute(sqlite_select_query)
@@ -53,6 +53,8 @@ async def readOwnedGames():
             results_list = await HowLongToBeat().async_search(game)
             if results_list:
                 best_element = max(results_list, key=lambda element: element.similarity)
+                if hours > 0 and best_element.completionist > 0:
+                    avg_completionist_user = hours / best_element.completionist
                 if best_element.similarity >= 0.3:
                     print("Average time to beat:\n")
             #checking if the game is single player / co-op, or multiplayer
@@ -60,7 +62,7 @@ async def readOwnedGames():
                         print('Game is singleplayer')
                         print(f'Main Story hours: {best_element.main_story}')
                         print(f'Completionist hours: {best_element.completionist}')
-                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, hours, img_logo_url))
+                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, avg_completionist_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, avg_completionist_user, hours, img_logo_url))
                         conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                     if best_element.complexity_lvl_mp == True:

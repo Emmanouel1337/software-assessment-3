@@ -17,7 +17,7 @@ async def readOwnedGames():
 
         conn = sqlite3.connect('fulldatabase.db')
         c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_completionist_user FLOAT, mp_time FLOAT, completionist FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
+        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_mainhours_user FLOAT, mp_time FLOAT, avg_mp_user, completionist FLOAT, avg_completionist_user FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
 
         sqlite_select_query = f"""SELECT name, playtime_forever, img_logo_url FROM owned_games"""
         cursor.execute(sqlite_select_query)
@@ -55,6 +55,10 @@ async def readOwnedGames():
                 best_element = max(results_list, key=lambda element: element.similarity)
                 if hours > 0 and best_element.completionist > 0:
                     avg_completionist_user = hours / best_element.completionist
+                if hours > 0 and best_element.main_story > 0:
+                    avg_mainhours_user = hours / best_element.main_story
+                if hours > 0 and best_element.mp_time > 0:
+                    avg_mp_user = hours / best_element.mp_time
                 if best_element.similarity >= 0.3:
                     print("Average time to beat:\n")
             #checking if the game is single player / co-op, or multiplayer
@@ -62,13 +66,13 @@ async def readOwnedGames():
                         print('Game is singleplayer')
                         print(f'Main Story hours: {best_element.main_story}')
                         print(f'Completionist hours: {best_element.completionist}')
-                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, avg_completionist_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, avg_completionist_user, hours, img_logo_url))
+                        c.execute('INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, avg_completionist_user, avg_mainhours_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (game) DO NOTHING', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, avg_completionist_user, avg_mainhours_user, hours, img_logo_url))
                         conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                     if best_element.complexity_lvl_mp == True:
                         print('Game is multiplayer')
                         print(f'Avg invested multiplayer hours: {best_element.mp_time}')
-                        c.execute('INSERT OR REPLACE INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, mp_time, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?)', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.mp_time, hours, img_logo_url))
+                        c.execute('INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, mp_time, avg_mp_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(game) DO UPDATE SET similarity = excluded.similarity, complexity_1v1_sp = excluded.complexity_1v1_sp, complexity_1v1_mp = excluded.complexity_1v1_mp, avg_mp_user = excluded.avg_mp_user, mp_time = excluded.mp_time, playtime_forever = excluded.playtime_forever, img_logo_url = excluded.img_logo_url', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.mp_time, avg_mp_user, hours, img_logo_url))
                         conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                 else:

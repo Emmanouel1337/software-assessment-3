@@ -27,6 +27,7 @@ async def readOwnedGames():
             personaname = row[0]
             profileurl = row[1]
             avatar = row[2]
+            print("Username: ", personaname, "\nProfile URL: ", profileurl, "\nAvatar: ", avatar)
 
         print('connected')
 

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <p>Please Register</p>
+    <form action="/register.html" method="POST">
+        <input type="text" placeholder="Enter Username" name="username">
+        <input type="text" placeholder="Enter Password" name="password">
+        <input type="text" placeholder="Enter Steam ID" name="steamid">
+        <input type="text" placeholder="Enter E-Mail" name="email">
+        <button class="btn" type="submit">Register</button>
+    </form>
+
+{% endblock %}

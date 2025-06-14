@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import sqlite3
 import users as dbHandler
 
@@ -10,12 +10,31 @@ c.execute('CREATE TABLE IF NOT EXISTS users (userid INTEGER PRIMARY KEY AUTOINCR
 
 #check how to do userid random gen on acc creation
 
-@app.route("/", methods=["GET", "POST"])
-def login():
-    return render_template("login.html")
+@app.route("/", methods=["GET"])
+def root():
+    return redirect("/index")
 
+@app.route("/index", methods=["GET", "POST"])
+def login():
+    if request.method == "GET" and request.args.get("url"):
+        url = request.args.get("url", "")
+        return redirect(url, code=302)
+    if request.method=="POST":
+        username = request.form['username']
+        password = request.form['password']
+        validAccount = dbHandler.retrieveUsers(username, password)
+        if validAccount:
+            return render_template("home.html")
+        else:
+            return(render_template("index.html"))
+    else:
+        return(render_template("index.html"))
+    
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "GET" and request.args.get("url"):
+        url = request.args.get("url", "")
+        return redirect(url, code=302)
     if request.method=="POST":
         username = request.form['username']
         password = request.form['password']

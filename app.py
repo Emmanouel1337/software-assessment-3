@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 import users as dbHandler
+import checkfull
 
 app = Flask(__name__)
 
@@ -45,5 +46,24 @@ def register():
     else:
         return render_template('register.html')
     
+@app.route("/home", methods=["GET", "POST"])
+def register():
+    if request.method == "GET" and request.args.get("url"):
+        url = request.args.get("url", "")
+        return redirect(url, code=302)
+    if request.method=="POST":
+        list1 = checkfull.getAsc()
+        for i in range(len(list1)):
+            #i is the item for filling in each column
+            pass
+        username = request.form['username']
+        password = request.form['password']
+        steamid = request.form['steamid']
+        email = request.form['email']
+        users = dbHandler.insertUser(username, password, steamid, email)
+        return render_template('register.html', users=users)
+    else:
+        return render_template('register.html')
+
 if __name__ == '__main__':
     app.run(debug=False)

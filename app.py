@@ -53,8 +53,10 @@ def home():
             'game': value[0],
             'avg_mainhours_user': value[5],
             'avg_completionist_user': value[9],
+            'avg_mp_user': value[7],
             'img_logo_url': value[11]
         })
+#CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_mainhours_user FLOAT, mp_time FLOAT, avg_mp_user, completionist FLOAT, avg_completionist_user FLOAT, playtime_forever FLOAT, img_logo_url TEXT
     return render_template('home.html', game_data=game_data)
 
 if __name__ == '__main__':

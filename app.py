@@ -50,8 +50,9 @@ def home():
     #i is the item for filling in each column
     game_data = []
     game_data2 = []
-    for value in list1:
+    for i, value in enumerate(list1, start=1):
         game_data_single = {
+            'rank': i,
             'game': value[0],
             'img_logo_url': value[11]
         }
@@ -72,8 +73,9 @@ def home():
             })
         game_data.append(game_data_single)
 
-    for value in list2:
+    for i, value in enumerate(list2, start=1):
         game_data_single2 = {
+            'rank': i,
             'game': value[0],
             'img_logo_url': value[11]
         }

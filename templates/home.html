@@ -6,6 +6,7 @@
     <div class="grid">
         {% for game in game_data %}
         <div class="img-wrapper">
+            <span class="ranking">{{ game.rank }}</span>
             <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
             <div class="content fade">
                 {% if game.timetobeat %}
@@ -22,6 +23,7 @@
         {% endfor %}
         {% for game in game_data2 %}
         <div class="img-wrapper">
+            <span class="ranking">{{ game.rank }}</span>
             <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
             <div class="content fade">
                 {% if game.timetobeat %}

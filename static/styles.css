@@ -55,3 +55,9 @@ body {
     transition: 200ms ease-in-out;
     opacity: 1;
 }
+
+.ranking {
+    margin-right: 8px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}

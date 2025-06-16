@@ -2,7 +2,14 @@
 
 {% block body %}
 
-    <p>HOMEPAGE<p>
-    
+    <p>HOMEPAGE</p>
+    <ul>
+        {% for game in game_data %}
+            <li id="game-name-{{ loop.index }}">{{ game.game }}</li>
+            <li id="game-mainhours-{{ loop.index }}">{{ game.avg_mainhours_user }}</li>
+            <li id="game-completion-{{ loop.index }}">{{ game.avg_completionist_user }}</li>
+            <li><img src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300"></li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}

@@ -3,13 +3,39 @@
 {% block body %}
 
     <p>HOMEPAGE</p>
-    <ul>
+    <div class="grid">
         {% for game in game_data %}
-            <li id="game-name-{{ loop.index }}">{{ game.game }}</li>
-            <li id="game-mainhours-{{ loop.index }}">{{ game.avg_mainhours_user }}</li>
-            <li id="game-completion-{{ loop.index }}">{{ game.avg_completionist_user }}</li>
-            <li><img src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300"></li>
+        <div class="img-wrapper">
+            <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+            <div class="content fade">
+                {% if game.timetobeat %}
+                    <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                {% endif %}
+                {% if game.timetocomplete %}
+                    <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
+                {% endif %}
+                {% if game.timefromavgmp %}
+                    <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+        {% for game in game_data2 %}
+        <div class="img-wrapper">
+            <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+            <div class="content fade">
+                {% if game.timetobeat %}
+                    <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                {% endif %}
+                {% if game.timetocomplete %}
+                    <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
+                {% endif %}
+                {% if game.timefromavgmp %}
+                    <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

@@ -17,7 +17,7 @@ async def readOwnedGames():
 
         conn = sqlite3.connect('fulldatabase.db')
         c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_mainhours_user FLOAT, mp_time FLOAT, avg_mp_user FLOAT, completionist FLOAT, avg_completionist_user FLOAT, playtime_forever FLOAT, img_logo_url TEXT)')
+        c.execute('CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_mainhours_user FLOAT, mp_time FLOAT, avg_mp_user FLOAT, completionist FLOAT, avg_completionist_user FLOAT, playtime_forever FLOAT, img_logo_url TEXT, hours_leftsp FLOAT, hours_leftcompletionist FLOAT, hours_leftmp FLOAT)')
 
         sqlite_select_query = f"""SELECT name, playtime_forever, img_logo_url FROM owned_games"""
         cursor.execute(sqlite_select_query)
@@ -33,6 +33,13 @@ async def readOwnedGames():
 
     #printing out name and minutes played
         for row in records:
+    #reseting all back to 0 if criteria is not met
+            avg_completionist_user = None
+            hours_leftcompletionist = None
+            avg_mainhours_user = None
+            hours_leftsp = None
+            avg_mp_user = None
+            hours_leftmp = None
             hours = round(int(row[1]) / 60, 1)
             game = row[0]
             img_logo_url = row[2]
@@ -54,12 +61,15 @@ async def readOwnedGames():
             results_list = await HowLongToBeat().async_search(game)
             if results_list:
                 best_element = max(results_list, key=lambda element: element.similarity)
-                if hours > 0 and best_element.completionist > 0:
+                if hours >= 0 and best_element.completionist > 0:
                     avg_completionist_user = hours / best_element.completionist
-                if hours > 0 and best_element.main_story > 0:
+                    hours_leftcompletionist = best_element.completionist - hours 
+                if hours >= 0 and best_element.main_story > 0:
                     avg_mainhours_user = hours / best_element.main_story
-                if hours > 0 and best_element.mp_time > 0:
+                    hours_leftsp = best_element.main_story - hours 
+                if hours >= 0 and best_element.mp_time > 0:
                     avg_mp_user = hours / best_element.mp_time
+                    hours_leftmp = best_element.mp_time - hours
                 if best_element.similarity >= 0.3:
                     print("Average time to beat:\n")
             #checking if the game is single player / co-op, or multiplayer
@@ -67,13 +77,16 @@ async def readOwnedGames():
                         print('Game is singleplayer')
                         print(f'Main Story hours: {best_element.main_story}')
                         print(f'Completionist hours: {best_element.completionist}')
-                        c.execute('INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, avg_completionist_user, avg_mainhours_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (game) DO NOTHING', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, avg_completionist_user, avg_mainhours_user, hours, img_logo_url))
+                        print(f'Time left to beat: {hours_leftsp}')
+                        print(f'Time left to completion: {hours_leftcompletionist}')
+                        c.execute('INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, main_story, completionist, avg_completionist_user, avg_mainhours_user, playtime_forever, img_logo_url, hours_leftsp, hours_leftcompletionist) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (game) DO NOTHING', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.main_story, best_element.completionist, avg_completionist_user, avg_mainhours_user, hours, img_logo_url, hours_leftsp, hours_leftcompletionist))
                         conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                     if best_element.complexity_lvl_mp == True:
                         print('Game is multiplayer')
                         print(f'Avg invested multiplayer hours: {best_element.mp_time}')
-                        c.execute('INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, mp_time, avg_mp_user, playtime_forever, img_logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(game) DO UPDATE SET similarity = excluded.similarity, complexity_1v1_sp = excluded.complexity_1v1_sp, complexity_1v1_mp = excluded.complexity_1v1_mp, avg_mp_user = excluded.avg_mp_user, mp_time = excluded.mp_time, playtime_forever = excluded.playtime_forever, img_logo_url = excluded.img_logo_url', (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.mp_time, avg_mp_user, hours, img_logo_url))
+                        print(f'Time left to beat: {hours_leftmp}')
+                        c.execute("INSERT INTO fulldatabase (game, similarity, complexity_1v1_sp, complexity_1v1_mp, mp_time, avg_mp_user, playtime_forever, img_logo_url, hours_leftmp, main_story, completionist, avg_mainhours_user, avg_completionist_user, hours_leftsp, hours_leftcompletionist) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(game) DO UPDATE SET similarity = excluded.similarity, complexity_1v1_sp = excluded.complexity_1v1_sp, complexity_1v1_mp = excluded.complexity_1v1_mp, mp_time = excluded.mp_time, avg_mp_user = excluded.avg_mp_user, playtime_forever = excluded.playtime_forever, img_logo_url = excluded.img_logo_url, hours_leftmp = excluded.hours_leftmp, main_story = excluded.main_story, completionist = excluded.completionist, avg_mainhours_user = excluded.avg_mainhours_user, avg_completionist_user = excluded.avg_completionist_user, hours_leftsp = excluded.hours_leftsp, hours_leftcompletionist = excluded.hours_leftcompletionist", (game, best_element.similarity, best_element.complexity_lvl_sp, best_element.complexity_lvl_mp, best_element.mp_time, avg_mp_user, hours, img_logo_url, hours_leftmp, best_element.main_story, best_element.completionist, avg_mainhours_user, avg_completionist_user, hours_leftsp, hours_leftcompletionist))
                         conn.commit()
                         print('------------------------------------------------------------------------------------\n')
                 else:

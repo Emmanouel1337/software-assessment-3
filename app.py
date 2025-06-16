@@ -46,29 +46,54 @@ def home():
         url = request.args.get("url", "")
         return redirect(url, code=302)
     list1 = checkfull.getAsc()
+    list2 = checkfull.getDesc()
     #i is the item for filling in each column
     game_data = []
+    game_data2 = []
     for value in list1:
-        game_data.append({
+        game_data_single = {
             'game': value[0],
             'img_logo_url': value[11]
-        })
-        if value[2] == True:
-            game_data.append({
+        }
+        sp_works = value[2] == True and value[12] is not None and value[12] >= 0
+        mp_works = value[3] == True and value[14] is not None and value[14] >= 0
+        if sp_works:
+            game_data_single.update({
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': float(value[10]-value[4])
-                'timetocomplete': float()
+                'timetobeat': value[12],
+                'timetocomplete': value[13]
             })
-        elif value[3] == False:
-            game_data.append({
-                'avg_mainhours_user': value[5],
-                'avg_completionist_user': value[9],
+
+        elif mp_works:
+            game_data_single.update({
                 'avg_mp_user': value[7],
-                'img_logo_url': value[11]
+                'timefromavgmp': value[14]
             })
-#CREATE TABLE IF NOT EXISTS fulldatabase (game TEXT PRIMARY KEY NOT NULL, similarity FLOAT NOT NULL, complexity_1v1_sp BOOLEAN NOT NULL, complexity_1v1_mp BOOLEAN NOT NULL, main_story FLOAT, avg_mainhours_user FLOAT, mp_time FLOAT, avg_mp_user, completionist FLOAT, avg_completionist_user FLOAT, playtime_forever FLOAT, img_logo_url TEXT
-    return render_template('home.html', game_data=game_data)
+        game_data.append(game_data_single)
+
+    for value in list2:
+        game_data_single2 = {
+            'game': value[0],
+            'img_logo_url': value[11]
+        }
+        sp_works = value[2] == True and value[12] is not None and value[12] >= 0
+        mp_works = value[3] == True and value[14] is not None and value[14] >= 0
+        if sp_works:
+            game_data_single2.update({
+                'avg_mainhours_user': value[5],
+                'avg_completionist_user': value[9],
+                'timetobeat': value[12],
+                'timetocomplete': value[13]
+            })
+
+        elif mp_works:
+            game_data_single2.update({
+                'avg_mp_user': value[7],
+                'timefromavgmp': value[14]
+            })
+        game_data2.append(game_data_single2)
+    return render_template('home.html', game_data=game_data, game_data2=game_data2)
 
 if __name__ == '__main__':
     app.run(debug=False)

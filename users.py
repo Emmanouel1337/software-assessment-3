@@ -26,12 +26,10 @@ def retrieveUsers(username, password):
             conn.close()
             return True
 
-def retrieveSteamId(steamid):
+def retrieveSteamId(username, password):
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM users WHERE steamid = ?', (steamid,))
-    if c.fetchone() == None:
-        conn.close()
-        return steamid
-    else:
-        conn.close()
+    c.execute('SELECT steamid FROM users WHERE username = ? AND password = ?', (username, password))
+    row = c.fetchone()
+    conn.close()
+    return row[0] if row else None

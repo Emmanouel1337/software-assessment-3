@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import users as dbHandler
 import checkfull
@@ -19,6 +19,7 @@ def index():
         password = request.form['password']
         validAccount = dbHandler.retrieveUsers(username, password)
         if validAccount:
+            steamid = dbHandler.retrieveSteamId(username, password)
             return redirect('/home') 
         else:
             return render_template("index.html", error="Invalid login")
@@ -45,7 +46,7 @@ def home():
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
-    steamid = dbHandler.retrieveSteamId()
+    steamid = request.args.get("steamid")
     list1 = checkfull.getAsc(steamid)
     list2 = checkfull.getDesc(steamid)
     #i is the item for filling in each column

@@ -10,7 +10,7 @@ def root():
     return redirect("/index")
 
 @app.route("/index", methods=["GET", "POST"])
-def login():
+def index():
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)

@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import users as dbHandler
 import checkfull
+import asyncio
+import dbgrab
 
 app = Flask(__name__)
 
@@ -20,7 +22,7 @@ def index():
         validAccount = dbHandler.retrieveUsers(username, password)
         if validAccount:
             steamid = dbHandler.retrieveSteamId(username, password)
-            return redirect('/home') 
+            return redirect(f'/home?steamid={steamid}') 
         else:
             return render_template("index.html", error="Invalid login")
     else:
@@ -36,10 +38,14 @@ def register():
         password = request.form['password']
         steamid = request.form['steamid']
         email = request.form['email']
-        users = dbHandler.insertUser(username, password, steamid, email)
-        return render_template('register.html', users=users)
+        users = dbHandler.insertUser(username, password, email, steamid)
+        if users:
+            asyncio.run(dbgrab.readOwnedGames(steamid))
+            return render_template('register.html', users=users)
+        else:
+            return render_template('register.html', duplicateusername = "Username exists, please enter a unique username")
     else:
-        return render_template('register.html')
+        return render_template("register.html")
     
 @app.route("/home", methods=["GET"])
 def home():
@@ -47,6 +53,8 @@ def home():
         url = request.args.get("url", "")
         return redirect(url, code=302)
     steamid = request.args.get("steamid")
+    if not steamid:
+        return redirect('/index')
     list1 = checkfull.getAsc(steamid)
     list2 = checkfull.getDesc(steamid)
     #i is the item for filling in each column

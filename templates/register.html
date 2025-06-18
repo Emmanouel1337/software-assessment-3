@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 
 {% block body %}
-
+    
+    {% if duplicateusername %}
+        <script>alert("{{ duplicateusername }}")</script>
+    {% endif %}
     <p>Please Register</p>
     <form action="/register" method="POST">
         <input type="text" placeholder="Enter Username" name="username">

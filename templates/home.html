@@ -4,12 +4,14 @@
 
     <p>HOMEPAGE</p>
     <div class="grid">
-
             {% for game in game_data %}
             <div class="img-wrapper">
                 <span class="ranking">{{ game.rank }}</span>
                 <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
                 <div class="content fade">
+                    {% if game.originalgamename %}
+                        <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                    {% endif %}
                     {% if game.timetobeat %}
                         <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
                     {% endif %}
@@ -27,6 +29,9 @@
             <span class="ranking">{{ game.rank }}</span>
             <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
             <div class="content fade">
+                {% if game.originalgamename %}
+                        <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                {% endif %}
                 {% if game.timetobeat %}
                     <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
                 {% endif %}

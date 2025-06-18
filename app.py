@@ -45,15 +45,16 @@ def home():
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
-    list1 = checkfull.getAsc()
-    list2 = checkfull.getDesc()
+    steamid = dbHandler.retrieveSteamId()
+    list1 = checkfull.getAsc(steamid)
+    list2 = checkfull.getDesc(steamid)
     #i is the item for filling in each column
     game_data = []
     game_data2 = []
     for i, value in enumerate(list1, start=1):
         game_data_single = {
             'rank': i,
-            'game': value[0],
+            'originalgamename': value[15],
             'img_logo_url': value[11]
         }
         sp_works = value[2] == True and value[12] is not None and value[12] >= 0
@@ -63,7 +64,7 @@ def home():
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
                 'timetobeat': value[12],
-                'timetocomplete': value[13]
+                'timetocomplete': value[13],
             })
 
         elif mp_works:
@@ -76,7 +77,7 @@ def home():
     for i, value in enumerate(list2, start=1):
         game_data_single2 = {
             'rank': i,
-            'game': value[0],
+            'originalgamename': value[15],
             'img_logo_url': value[11]
         }
         sp_works = value[2] == True and value[12] is not None and value[12] >= 0
@@ -86,7 +87,7 @@ def home():
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
                 'timetobeat': value[12],
-                'timetocomplete': value[13]
+                'timetocomplete': value[13],
             })
 
         elif mp_works:

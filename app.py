@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import sqlite3
 import users as dbHandler
 import checkfull
@@ -22,7 +22,7 @@ def index():
         validAccount = dbHandler.retrieveUsers(username, password)
         if validAccount:
             steamid = dbHandler.retrieveSteamId(username, password)
-            return redirect(f'/home?steamid={steamid}') 
+            return redirect(url_for('home', steamid=steamid)) 
         else:
             return render_template("index.html", error="Invalid login")
     else:

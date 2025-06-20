@@ -29,20 +29,22 @@ body {
 }
 
 .img-wrapper {
+    display: flex;
+    align-items: center;
     position: relative;
     overflow: hidden;
     transition: 200ms ease-in-out;
-    width: 20%;
+    width: 100%;
+    width: 400px;
 }
 
 .img-wrapper > img {
-    display: block;
-    opacity: 1;
-    transition: 200ms ease-in-out;
-    object-position: center;
-    filter: none;
-    width: 100%;
+    flex-basis: calc(100% - 3rem);
+    flex-grow: 1;
     height: 100%;
+    object-fit: cover;
+    transition: opacity 200ms ease-in-out;
+    display: block;
 }
 
 .img-wrapper > .content {
@@ -63,13 +65,45 @@ body {
 
 }
 
-.img-wrapper:hover > .content.fade {
+
+.img-wrapper > .ranking {
+    width: 3rem;
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: Verdana;
+    color: white;
+    background-color: transparent;
+    z-index: 5;
+}
+
+.img-wrapper > .content.fade {
     transition: 200ms ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.img-wrapper:hover > .content.fade {
+    opacity: 0.75;
+    pointer-events: auto;
+}
+
+.img-wrapper:hover > .img {
     opacity: 0.75;
 }
 
-.ranking {
-    margin-right: 8px;
-    font-size: 1.2em;
-    vertical-align: middle;
+.img-wrapper:hover > .ranking {
+    background-color: transparent;
+    opacity: 1;
+    z-index: 5
+}
+
+.img-wrapper:hover > img.blur {
+    opacity: 0.75;
+    z-index: 5;
 }

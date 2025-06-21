@@ -4,7 +4,7 @@
 /* Image Wrapper, and Hover Effect */
 
 .header {
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     color: white;
     font-size: 30px;
@@ -28,6 +28,19 @@ body {
     background-color: #792d2d;
 }
 
+.navbar {
+    display: flex;
+    justify-content: center;
+}
+
+.navbar h3 a {
+    color: white;
+}
+
+.navbar h3 a:hover {
+    color: white;
+}
+
 .img-wrapper {
     display: flex;
     align-items: center;
@@ -43,7 +56,8 @@ body {
     flex-grow: 1;
     height: 100%;
     object-fit: cover;
-    transition: opacity 200ms ease-in-out;
+    transition: 200ms ease-in-out;
+    opacity: 1;
     display: block;
 }
 
@@ -52,16 +66,17 @@ body {
     transition: 200ms ease-in-out;
     inset: 0;
     font-size: 1rem;
-    color: black;
-    padding: 1rem;
-    background: rgba(255, 255, 255, .95);
+    color: white;
+    padding: 1rem 1rem 1rem 4rem;
+    background: rgba(0, 0, 0, .7);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
-    opacity: 0;
+    opacity: 1;
     white-space: pre-line;
+    z-index: 2;
 
 }
 
@@ -77,33 +92,56 @@ body {
     font-weight: bold;
     font-family: Verdana;
     color: white;
-    background-color: transparent;
-    z-index: 5;
+    background-color: #792d2d;
+    z-index: 3;
+    opacity: 1;
 }
 
 .img-wrapper > .content.fade {
     transition: 200ms ease-in-out;
+    align-items: flex-start;
+    padding: 1rem 1rem 1rem 4rem;
     opacity: 0;
     pointer-events: none;
     z-index: 2;
 }
 
 .img-wrapper:hover > .content.fade {
-    opacity: 0.75;
+    opacity: 1;
     pointer-events: auto;
 }
 
 .img-wrapper:hover > .img {
-    opacity: 0.75;
+    opacity: 0.5;
 }
 
 .img-wrapper:hover > .ranking {
-    background-color: transparent;
+    background-color: #792d2d;
     opacity: 1;
-    z-index: 5
 }
 
-.img-wrapper:hover > img.blur {
-    opacity: 0.75;
-    z-index: 5;
+.loader {
+    margin: 0 0 2em;
+    height: 100px;
+    width: 20%;
+    text-align: center;
+    padding: 1em;
+    margin: 0 auto 1em;
+    display: inline-block;
+    vertical-align: top;
 }
+
+#position {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+svg path,
+svg rect{
+  fill: #792d2d;
+}
+

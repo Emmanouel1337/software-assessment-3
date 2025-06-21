@@ -1,6 +1,12 @@
-{% extends "layout.html" %}
-
-{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="header">
+            <h1>NEXTUP</h1>
+        </div>
 
     <p>Please Log In</p>
     <form action="/index" method="POST">
@@ -10,5 +16,6 @@
     </form>
 
     <p>Don't have an account yet? <a href="{{ url_for('register')}}">Register</a></p>
-
-{% endblock %}
+    
+    </body>
+</html>

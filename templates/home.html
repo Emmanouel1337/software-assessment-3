@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-
-    <p>HOMEPAGE</p>
+    <h2>Games you are close to beating:</h2>
     <div class="grid">
             {% for game in game_data %}
                 <div class="img-wrapper">
@@ -24,6 +23,9 @@
                     </div>
                 </div>
             {% endfor %}
+    </div>
+    <h2>Games you need to catch up on:</h2>
+    <div class="grid">
         {% for game in game_data2 %}
         <div class="img-wrapper">
             <span class="ranking">{{ game.rank }}</span>

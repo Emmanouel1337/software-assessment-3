@@ -197,5 +197,3 @@ async def readOwnedGames(targetsteamid):
         if sqliteConnection:
             sqliteConnection.close()
             print("------------------------------------------------")
-
-

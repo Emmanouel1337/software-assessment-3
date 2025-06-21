@@ -4,8 +4,13 @@ import users as dbHandler
 import checkfull
 import asyncio
 import dbgrab
+import socket
 
 app = Flask(__name__)
+app.secret_key = "woeuirhy9873wer249fhgjKL32NFW?!@#!#4234"
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600
+socket.setdefaulttimeout(300)
 
 @app.route("/", methods=["GET"])
 def root():
@@ -22,6 +27,7 @@ def index():
         validAccount = dbHandler.retrieveUsers(username, password)
         if validAccount:
             steamid = dbHandler.retrieveSteamId(username, password)
+            session['steamid'] = steamid
             return redirect(url_for('home', steamid=steamid)) 
         else:
             return render_template("index.html", error="Invalid login")
@@ -49,12 +55,10 @@ def register():
     
 @app.route("/home", methods=["GET"])
 def home():
-    if request.method == "GET" and request.args.get("url"):
-        url = request.args.get("url", "")
-        return redirect(url, code=302)
-    steamid = request.args.get("steamid")
+    steamid = session.get('steamid')
     if not steamid:
         return redirect('/index')
+    
     list1 = checkfull.getAsc(steamid)
     list2 = checkfull.getDesc(steamid)
     #i is the item for filling in each column
@@ -106,6 +110,11 @@ def home():
             })
         game_data2.append(game_data_single2)
     return render_template('home.html', game_data=game_data, game_data2=game_data2)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=False)

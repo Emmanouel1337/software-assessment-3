@@ -3,7 +3,7 @@ import sqlite3
 def insertUser(username, password, email, steamid):
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
-    c.execute('CREATE TABLE IF NOT EXISTS users (userid INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL, steamid TEXT NOT NULL)')
+    c.execute('CREATE TABLE IF NOT EXISTS users (userid INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, steamid TEXT NOT NULL)')
     try:
         c.execute('INSERT INTO users (username, password, email, steamid) VALUES(?, ?, ?, ?)', (username, password, email, steamid))
         conn.commit()

@@ -6,18 +6,25 @@ import asyncio
 import dbgrab
 import socket
 
+# Running flask
 app = Flask(__name__)
+
+# Creating the secret key to use for sessions, security
 app.secret_key = "woeuirhy9873wer249fhgjKL32NFW?!@#!#4234"
+
+# An attempt to try to make the PWA runtime longer so the user doesnt run into an error upon registration, does not work.
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 socket.setdefaulttimeout(300)
 
+# App Routes
 @app.route("/", methods=["GET"])
 def root():
     return redirect("/index")
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
+    #
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
@@ -47,9 +54,9 @@ def register():
         users = dbHandler.insertUser(username, password, email, steamid)
         if users:
             asyncio.run(dbgrab.readOwnedGames(steamid))
-            return render_template('register.html', users=users)
+            return render_template('register.html', users=users, email=email)
         else:
-            return render_template('register.html', duplicateusername = "Username exists, please enter a unique username")
+            return render_template('register.html', duplicateusername = "Username exists or e-mail already exists")
     else:
         return render_template("register.html")
     

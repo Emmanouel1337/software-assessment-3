@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h2>Games you have (probably) beaten:</h2>
+    <div class="grid">
+            {% for game in game_data3 %}
+                <div class="img-wrapper">
+                    <span class="ranking">{{ game.rank }}</span>
+                    <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+                    <div class="content fade">
+                        {% if game.originalgamename %}
+                            <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                        {% endif %}
+                        {% if game.timetobeat %}
+                            <p id="game-timetobeat-{{ loop.index }}">Hours over average time to beat: {{ game.timetobeat }}</p>
+                        {% endif %}
+                        {% if game.timetocomplete %}
+                            <p id="game-timetocomplete-{{ loop.index }}">Hours over average time to complete: {{ game.timetocomplete }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+
+    <h2>Your most played games:</h2>
+    <div class="grid">
+            {% for game in game_data4 %}
+                <div class="img-wrapper">
+                    <span class="ranking">{{ game.rank }}</span>
+                    <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+                    <div class="content fade">
+                        {% if game.originalgamename %}
+                            <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                        {% endif %}
+                        {% if game.playtime_forever %}
+                            <p id="game-timetobeat-{{ loop.index }}">Hours played: {{ game.playtime_forever }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+{% endblock %}

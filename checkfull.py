@@ -21,7 +21,7 @@ def getDesc(steamid):
 def getBeaten(steamid):
     conn = sqlite3.connect(f'/workspaces/software-assessment-3/{steamid}_fulldatabase.db')
     cursor = conn.cursor()
-    cursor.execute(f"""SELECT game, hours_leftsp, hours_leftmp FROM "{steamid}_fulldatabase" WHERE (hours_leftsp <= 0 OR hours_leftmp <= 0) ORDER BY GREATEST(hours_leftsp, hours_leftmp) ASC LIMIT 8;""")
+    cursor.execute(f"""SELECT game, hours_leftsp, hours_leftmp FROM "{steamid}_fulldatabase" WHERE complexity_1v1_sp = 1 AND hours_leftsp <= 0 ORDER BY GREATEST(hours_leftsp) ASC LIMIT 8;""")
     cursor.close()
     conn.close()
     return cursor.fetchall

@@ -150,6 +150,39 @@ def beaten():
             game_data4.append(game_data_single4)
     return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4)
 
+@app.route("/backlog", methods=["GET"])
+def backlog():
+    steamid = session.get('steamid')
+    if not steamid:
+        return redirect('/index')
+    
+    list1 = checkfull.getAsc(steamid)
+    #i is the item for filling in each column
+    game_data = []
+    for i, value in enumerate(list1, start=1):
+        game_data_single = {
+            'rank': i,
+            'originalgamename': value[15],
+            'img_logo_url': value[11]
+        }
+        sp_works = value[2] == True and value[12] is not None and value[12] >= 0
+        mp_works = value[3] == True and value[14] is not None and value[14] >= 0
+        if sp_works:
+            game_data_single.update({
+                'avg_mainhours_user': value[5],
+                'avg_completionist_user': value[9],
+                'timetobeat': value[12],
+                'timetocomplete': value[13],
+            })
+
+        elif mp_works:
+            game_data_single.update({
+                'avg_mp_user': value[7],
+                'timefromavgmp': value[14]
+            })
+        game_data.append(game_data_single)
+    return render_template('backlog.html', game_data=game_data)
+
 @app.route("/logout")
 def logout():
     session.clear()

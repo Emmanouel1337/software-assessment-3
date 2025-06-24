@@ -11,16 +11,19 @@
         {% if duplicateusername %}
             <script>alert("{{ duplicateusername }}")</script>
         {% endif %}
-        <p>Please Register</p>
-        <form action="/register" method="POST">
-            <input type="text" placeholder="Enter Username" name="username" required>
-            <input type="password" placeholder="Enter Password" name="password" required>
-            <input type="text" placeholder="Enter Steam ID" name="steamid" required>
-            <input type="email" placeholder="Enter E-Mail" name="email" required>
-            <button class="btn" type="submit">Register</button>
-        </form>
-                                                                                                                        
-        <p>Back to <a href="{{ url_for('index')}}">Log In</a></p>
+        <div class="login-page">
+            <div class="form">
+                <p>Please Register</p>
+                <form action="/register" method="POST">
+                    <input type="text" placeholder="Enter Username" name="username" required>
+                    <input type="password" placeholder="Enter Password" name="password" required>
+                    <input type="text" placeholder="Enter Steam ID" name="steamid" required>
+                    <input type="email" placeholder="Enter E-Mail" name="email" required>
+                    <button class="btn" type="submit">Register</button>
+                    <p class="message">Back to <a href="{{ url_for('home')}}">Home</a></p>
+                </form>
+            </div>
+        </div>
 
         <div id="position">
             <div class="loader">

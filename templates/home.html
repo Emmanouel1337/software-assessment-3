@@ -4,22 +4,30 @@
     <h2>Games you are close to beating:</h2>
     <div class="grid">
             {% for game in game_data %}
-                <div class="img-wrapper">
-                    <span class="ranking">{{ game.rank }}</span>
-                    <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
-                    <div class="content fade">
-                        {% if game.originalgamename %}
-                            <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
-                        {% endif %}
-                        {% if game.timetobeat %}
-                            <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
-                        {% endif %}
-                        {% if game.timetocomplete %}
-                            <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
-                        {% endif %}
-                        {% if game.timefromavgmp %}
-                            <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
-                        {% endif %}
+                <div class='img-wrapper'>
+                    <div class="rank-column">
+                        <span class="ranking">{{ game.rank }}</span>
+                    </div>
+
+                    <div class="img-column">
+                        <div class="img-container">
+                            <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+                        </div>
+
+                        <div class="content fade">
+                            {% if game.originalgamename %}
+                                <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                            {% endif %}
+                            {% if game.timetobeat %}
+                                <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                            {% endif %}
+                            {% if game.timetocomplete %}
+                                <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
+                            {% endif %}
+                            {% if game.timefromavgmp %}
+                                <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
@@ -27,24 +35,32 @@
     <h2>Games you need to catch up on:</h2>
     <div class="grid">
         {% for game in game_data2 %}
-        <div class="img-wrapper">
-            <span class="ranking">{{ game.rank }}</span>
-            <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
-            <div class="content fade">
-                {% if game.originalgamename %}
-                        <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
-                {% endif %}
-                {% if game.timetobeat %}
-                    <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
-                {% endif %}
-                {% if game.timetocomplete %}
-                    <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
-                {% endif %}
-                {% if game.timefromavgmp %}
-                    <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
-                {% endif %}
+                    <div class='img-wrapper'>
+                    <div class="rank-column">
+                        <span class="ranking">{{ game.rank }}</span>
+                    </div>
+
+                    <div class="img-column">
+                        <div class="img-container">
+                            <img class="blur" src="{{ game.img_logo_url }}" alt="{{ game.game }} logo" width="300">
+                        </div>
+
+                        <div class="content fade">
+                            {% if game.originalgamename %}
+                                <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
+                            {% endif %}
+                            {% if game.timetobeat %}
+                                <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                            {% endif %}
+                            {% if game.timetocomplete %}
+                                <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
+                            {% endif %}
+                            {% if game.timefromavgmp %}
+                                <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                            {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 

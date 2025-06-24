@@ -141,19 +141,14 @@ def beaten():
             game_data3.append(game_data_single3)
     game_data4 = []
     for i, value in enumerate(list4, start=1):
-        sp_works = value[2] == True and value[12] is not None and value[12] >= 0
-        mp_works = value[3] == True and value[14] is not None and value[14] >= 0
-        if sp_works:
             game_data_single4 = {
+                'rank': i,
+                'originalgamename': value[15],
+                'img_logo_url': value[11],
                 'playtime_forever': value[10],
             }
-
-        elif mp_works:
-            game_data_single4 = {
-                'playtime_forever': value[10],
-            }
-        game_data4.append(game_data_single4)
-    return render_template('beaten.html', game_data4=game_data4)
+            game_data4.append(game_data_single4)
+    return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4)
 
 @app.route("/logout")
 def logout():

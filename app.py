@@ -135,8 +135,8 @@ def beaten():
                 'img_logo_url': value[11],
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': abs(value[12]),
-                'timetocomplete': abs(value[13]) if value[13] is not None else None,
+                'timetobeat': round(abs(value[12]), 1) if value[12] is not None else None,
+                'timetocomplete': round(abs(value[13])) if value[13] is not None else None,
             }
             game_data3.append(game_data_single3)
     game_data4 = []
@@ -145,7 +145,7 @@ def beaten():
                 'rank': i,
                 'originalgamename': value[15],
                 'img_logo_url': value[11],
-                'playtime_forever': value[10],
+                'playtime_forever': round(value[10]) if value[10] is not None else None,
             }
             game_data4.append(game_data_single4)
     return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4)
@@ -171,7 +171,7 @@ def backlog():
             game_data_single.update({
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': value[12],
+                'timetobeat': round(value[12], 1) if value[12] is not None else None,
                 'timetocomplete': value[13],
             })
 

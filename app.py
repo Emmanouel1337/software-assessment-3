@@ -51,10 +51,10 @@ def register():
         password = request.form['password']
         steamid = request.form['steamid']
         email = request.form['email']
-        users = dbHandler.insertUser(username, password, email, steamid)
-        if users:
+        valid = dbHandler.insertUser(username, password, email, steamid)
+        if valid:
             asyncio.run(dbgrab.readOwnedGames(steamid))
-            return render_template('register.html', users=users, email=email)
+            return render_template('register.html', users=valid, email=email)
         else:
             return render_template('register.html', duplicateusername = "Username exists or e-mail already exists")
     else:

@@ -15,10 +15,10 @@
                         </div>
 
                         <div class="content fade">
-                            {% if game.originalgamename %}
+                            {% if 'originalgamename' in game and game.originalgamename is not none %}
                                 <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
                             {% endif %}
-                            {% if game.playtime_forever %}
+                            {% if 'playtime_forever' in game and game.playtime_forever is not none %}
                                 <p id="game-timetobeat-{{ loop.index }}">Hours played: {{ game.playtime_forever }}</p>
                             {% endif %}
                         </div>
@@ -40,16 +40,19 @@
                         </div>
 
                         <div class="content fade">
-                            {% if game.originalgamename %}
+                            {% if 'originalgamename' in game and game.originalgamename is not none %}
                                 <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
                             {% endif %}
-                            {% if game.timetobeat %}
+
+                            {% if 'timetobeat' in game and game.timetobeat is not none %}
                                 <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
                             {% endif %}
-                            {% if game.timetocomplete %}
+
+                            {% if 'timetocomplete' in game and game.timetocomplete is not none %}
                                 <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
                             {% endif %}
-                            {% if game.timefromavgmp %}
+
+                            {% if 'timefromavgmp' in game and game.timefromavgmp is not none %}
                                 <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
                             {% endif %}
                         </div>

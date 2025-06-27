@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <form method="POST" action="/fakerefresh">
+    <form method="POST" action="/backlog">
+        <h2>This page is a visual representation of how the page would function, no backlogging / sorting has been added but can be in future updates</h2>
         <h2>Backlog:</h2>
         <div class="grid">
                 {% for game in game_data %}
@@ -19,17 +20,25 @@
                             </div>
 
                             <div class="content fade">
-                                {% if game.originalgamename %}
+                                {% if 'originalgamename' in game %}
                                     <p id="game-originalgamename-{{ loop.index }}">{{ game.originalgamename }}</p>
                                 {% endif %}
-                                {% if game.timetobeat %}
-                                    <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                                {% if 'timetobeat' in game and game.timetobeat is not none %}
+                                    {% if game.timetobeat < 0.1 %}
+                                        <p>How far you are from beating: Less than 0.1 hrs</p>
+                                    {% else %}
+                                        <p id="game-timetobeat-{{ loop.index }}">How far you are from beating: {{ game.timetobeat }}</p>
+                                    {% endif %}
                                 {% endif %}
-                                {% if game.timetocomplete %}
+                                {% if 'timetocomplete' in game and game.timetocomplete is not none %}
                                     <p id="game-timetocomplete-{{ loop.index }}">How far you are from completion: {{ game.timetocomplete }}</p>
                                 {% endif %}
-                                {% if game.timefromavgmp %}
-                                    <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                                {% if 'timefromavgmp' in game and game.timefromavgmp is not none %}
+                                    {% if game.timefromavgmp < 0.1 %}
+                                        <p>How far you are from average multiplayer hours: Less than 0.1 hrs</p>
+                                    {% else %}
+                                        <p id="game-timefromavgmp-{{ loop.index }}">How far you are from average multiplayer time: {{ game.timefromavgmp }}</p>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -37,4 +46,7 @@
                 {% endfor %}
         </div>
     </form>
+    <div style="text-align: center; margin-top: 10px;">
+        <button type="button" onclick="location.reload();" style="padding: 10px 20px;">Submit</button>
+    </div>
 {% endblock %}

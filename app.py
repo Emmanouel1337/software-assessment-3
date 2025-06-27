@@ -30,11 +30,13 @@ def index():
         return redirect(url, code=302)
     if request.method=="POST":
         username = request.form['username']
-        password = request.form['password']
+        password = request.form['password'] 
         validAccount = dbHandler.retrieveUsers(username, password)
         if validAccount:
             steamid = dbHandler.retrieveSteamId(username, password)
             session['steamid'] = steamid
+            avatar_url = dbHandler.retrieveAvatar(steamid)
+            session['avatar_url'] = avatar_url
             return redirect(url_for('home', steamid=steamid)) 
         else:
             return render_template("index.html", error="Invalid login")
@@ -46,12 +48,14 @@ def register():
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
+    # Getting form information
     if request.method=="POST":
         username = request.form['username']
         password = request.form['password']
         steamid = request.form['steamid']
         email = request.form['email']
         valid = dbHandler.insertUser(username, password, email, steamid)
+        # Checking for duplicates, and if works, readOwnedGames()
         if valid:
             asyncio.run(dbgrab.readOwnedGames(steamid))
             return render_template('register.html', users=valid, email=email)
@@ -71,11 +75,15 @@ def home():
     #i is the item for filling in each column
     game_data = []
     game_data2 = []
+    # Sorting games
     for i, value in enumerate(list1, start=1):
         game_data_single = {
             'rank': i,
             'originalgamename': value[15],
-            'img_logo_url': value[11]
+            'img_logo_url': value[11],
+            'timetobeat': None,
+            'timetocomplete': None,
+            'timefromavgmp': None
         }
         sp_works = value[2] == True and value[12] is not None and value[12] >= 0
         mp_works = value[3] == True and value[14] is not None and value[14] >= 0
@@ -83,14 +91,14 @@ def home():
             game_data_single.update({
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': value[12],
-                'timetocomplete': value[13],
+                'timetobeat': round(abs(value[12]), 1) if value[12] is not None else None,
+                'timetocomplete': round(abs(value[13]), 1) if value[13] is not None else None,
             })
 
         elif mp_works:
             game_data_single.update({
-                'avg_mp_user': value[7],
-                'timefromavgmp': value[14]
+                'avg_mp_user': round(abs(value[7]), 1) if value[7] is not None else None,
+                'timefromavgmp': round(abs(value[14]), 1) if value[14] is not None else None
             })
         game_data.append(game_data_single)
 
@@ -106,17 +114,17 @@ def home():
             game_data_single2.update({
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': value[12],
-                'timetocomplete': value[13],
+                'timetobeat': round(abs(value[12]), 1) if value[12] is not None else None,
+                'timetocomplete': round(abs(value[13]), 1) if value[13] is not None else None,
             })
 
         elif mp_works:
             game_data_single2.update({
                 'avg_mp_user': value[7],
-                'timefromavgmp': value[14]
+                'timefromavgmp': round(abs(value[14]), 1) if value[14] is not None else None
             })
         game_data2.append(game_data_single2)
-    return render_template('home.html', game_data=game_data, game_data2=game_data2)
+    return render_template('home.html', game_data=game_data, game_data2=game_data2, avatar_url=session.get('avatar_url'))
 
 @app.route("/beaten", methods=["GET"])
 def beaten():
@@ -127,6 +135,7 @@ def beaten():
     list4 = checkfull.getMostPlayed(steamid)
     #i is the item for filling in each column
     game_data3 = []
+    # Sorting games
     for i, value in enumerate(list3, start=1):
         if value[2] == True and value[3] == False and value[12] is not None and value[12] <= 0:
             game_data_single3 = {
@@ -136,7 +145,7 @@ def beaten():
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
                 'timetobeat': round(abs(value[12]), 1) if value[12] is not None else None,
-                'timetocomplete': round(abs(value[13])) if value[13] is not None else None,
+                'timetocomplete': round(abs(value[13]), 1) if value[13] is not None else None,
             }
             game_data3.append(game_data_single3)
     game_data4 = []
@@ -148,7 +157,7 @@ def beaten():
                 'playtime_forever': round(value[10]) if value[10] is not None else None,
             }
             game_data4.append(game_data_single4)
-    return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4)
+    return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4, avatar_url=session.get('avatar_url'))
 
 @app.route("/backlog", methods=["GET"])
 def backlog():
@@ -159,11 +168,12 @@ def backlog():
     list1 = checkfull.getAsc(steamid)
     #i is the item for filling in each column
     game_data = []
+    # Sorting games
     for i, value in enumerate(list1, start=1):
         game_data_single = {
             'rank': i,
             'originalgamename': value[15],
-            'img_logo_url': value[11]
+            'img_logo_url': value[11],
         }
         sp_works = value[2] == True and value[12] is not None and value[12] >= 0
         mp_works = value[3] == True and value[14] is not None and value[14] >= 0
@@ -181,9 +191,10 @@ def backlog():
                 'timefromavgmp': value[14]
             })
         game_data.append(game_data_single)
-    return render_template('backlog.html', game_data=game_data)
+    return render_template('backlog.html', game_data=game_data, avatar_url=session.get('avatar_url'))
 
 @app.route("/logout")
+# Clearing the session so you cannot gain access to other accounts through the url
 def logout():
     session.clear()
     return redirect(url_for('index'))

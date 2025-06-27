@@ -1,11 +1,16 @@
 This PWA prototype integrates the HowLongToBeatAPI with the Steam API to gather interesting information about the games a user has on their profile.
+
 It gathers the information from HowLongToBeat and compares it with the information gathered from the SteamAPI when given a users SteamID.
+
+Due to the scope of the project, many ideas that I wanted to implement had to be cut out. Some of these include a search function, a specific settings for completion via achievements, live functionality and a functional backlog system.
 
 ## Installation
 
-Firstly, you need to follow the steps in the HowLongToBeat API's README.md to download the required packages:
+Firstly, you need to follow the steps in the HowLongToBeat API's README.md to download the required packages, this would include running this command in terminal:
 
-And then you need to run in terminal:
+pip install howlongtobeatpy
+
+And then you need to run in terminal to download flask:
 
 pip install flask
 
@@ -23,3 +28,10 @@ Firstly you need to ctrl + click on the link shown in terminal, usually a variat
 
 This will open the PWA and then allow for usage of the website.
 
+Registration page only currently works with the steam ids of 76561198967236244 and 76561198260317680, and time outs may occur due to async limits.
+
+## Credits
+
+ScrappyCoco (https://github.com/ScrappyCocco) - Compiling of information from HowLongToBeat into a Python API 
+
+Valve Corporation / Valve Developer Community (https://developer.valvesoftware.com/wiki/Main_Page) - Information about user's games via the Steam Web API

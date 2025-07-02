@@ -113,6 +113,19 @@ h2 {
   opacity: 0;
   transition: 200ms ease-in-out;
   pointer-events: none;
+  line-height: 1.1;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.content.fade p {
+  margin: 0.2rem 0;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .img-wrapper > img {

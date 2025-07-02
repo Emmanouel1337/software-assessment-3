@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
-import sqlite3
+import math
 import users as dbHandler
 import checkfull
 import asyncio
@@ -83,10 +83,9 @@ def home():
             game_data_single.update({
                 'avg_mainhours_user': value[5],
                 'avg_completionist_user': value[9],
-                'timetobeat': value[12],
-                'timetocomplete': value[13],
+                'timetobeat': round(value[12], 1),
+                'timetocomplete': None if value[13] is None else math.floor(value[13]),
             })
-
         elif mp_works:
             game_data_single.update({
                 'avg_mp_user': value[7],

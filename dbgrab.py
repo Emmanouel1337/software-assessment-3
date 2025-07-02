@@ -4,10 +4,10 @@ from howlongtobeatpy import HowLongToBeat
 async def readOwnedGames(targetsteamid):
 #connecting to table
     try:
-        sqliteConnection = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games.db')
+        sqliteConnection = sqlite3.connect('player_summaries_db\owned_games.db')
         cursor = sqliteConnection.cursor()
 
-        sqliteConnection2 = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/player_summary.db')
+        sqliteConnection2 = sqlite3.connect('player_summaries_db\player_summary.db')
         cursor2 = sqliteConnection2.cursor()
 
         sqlite_select_query2 = f"""SELECT avatar, steamid FROM player_summaries WHERE steamid = ?"""
@@ -97,10 +97,10 @@ async def readOwnedGames(targetsteamid):
                     print('------------------------------------------------------------------------------------\n')
             cursor.close()
         
-        sqliteConnection3 = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/owned_games2.db')
+        sqliteConnection3 = sqlite3.connect('player_summaries_db/owned_games2.db')
         cursor3 = sqliteConnection3.cursor()
 
-        sqliteConnection4 = sqlite3.connect('/workspaces/software-assessment-3/player_summaries_db/player_summary2.db')
+        sqliteConnection4 = sqlite3.connect('player_summaries_db/player_summary2.db')
         cursor4 = sqliteConnection4.cursor()
 
         sqlite_select_query3 = f"""SELECT avatar, steamid FROM player_summaries WHERE steamid = ?"""

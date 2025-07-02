@@ -32,3 +32,12 @@ def retrieveSteamId(username, password):
     row = c.fetchone()
     conn.close()
     return row[0] if row else None
+
+def retrieveAvatar(steamid):
+    conn = sqlite3.connect('player_summaries_db/player_summary.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT avatar FROM player_summaries WHERE steamid = ?", (steamid,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return row[0] if row else None

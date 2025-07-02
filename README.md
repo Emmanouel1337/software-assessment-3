@@ -34,4 +34,4 @@ Registration page only currently works with the steam ids of 76561198967236244 a
 
 ScrappyCoco (https://github.com/ScrappyCocco) - Compiling of information from HowLongToBeat into a Python API 
 
-Valve Corporation / Valve Developer Community (https://developer.valvesoftware.com/wiki/Main_Page) - Information about user's games via the Steam Web API
+Valve Corporation / Valve Developer Community (https://developer.valvesoftware.com/wiki/Main_Page) - Information about user's games via Steam Web API

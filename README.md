@@ -1,4 +1,4 @@
-This PWA prototype integrates the HowLongToBeatAPI with the Steam API to gather interesting information about the games a user has on their profile.
+This PWA prototype integrates the HowLongToBeatAPI with the Steam API to gather interesting information about the games a user has on their steam profile.
 
 It gathers the information from HowLongToBeat and compares it with the information gathered from the SteamAPI when given a users SteamID.
 

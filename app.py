@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, session, url_for
-import math
 import users as dbHandler
 import checkfull
 import asyncio
@@ -24,10 +23,10 @@ def root():
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
-    #
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
+    # Checking for valid account
     if request.method=="POST":
         username = request.form['username']
         password = request.form['password'] 
@@ -35,8 +34,6 @@ def index():
         if validAccount:
             steamid = dbHandler.retrieveSteamId(username, password)
             session['steamid'] = steamid
-            avatar_url = dbHandler.retrieveAvatar(steamid)
-            session['avatar_url'] = avatar_url
             return redirect(url_for('home', steamid=steamid)) 
         else:
             return render_template("index.html", error="Invalid login")
@@ -56,11 +53,12 @@ def register():
         email = request.form['email']
         valid = dbHandler.insertUser(username, password, email, steamid)
         # Checking for duplicates, and if works, readOwnedGames()
-        if valid:
+        allowed_ids = {"76561198967236244", "76561198260317680"}
+        if valid and steamid in allowed_ids:
             asyncio.run(dbgrab.readOwnedGames(steamid))
             return render_template('register.html', users=valid, email=email)
         else:
-            return render_template('register.html', duplicateusername = "Username exists or e-mail already exists")
+            return render_template('register.html', duplicateusername = "Invalid input. E-mail, username or steamid is invalid or already exists.")
     else:
         return render_template("register.html")
     
@@ -69,7 +67,7 @@ def home():
     steamid = session.get('steamid')
     if not steamid:
         return redirect('/index')
-    
+    username = dbHandler.retrieveUsername(steamid)
     list1 = checkfull.getAsc(steamid)
     list2 = checkfull.getDesc(steamid)
     #i is the item for filling in each column
@@ -123,13 +121,14 @@ def home():
                 'timefromavgmp': round(abs(value[14]), 1) if value[14] is not None else None
             })
         game_data2.append(game_data_single2)
-    return render_template('home.html', game_data=game_data, game_data2=game_data2, avatar_url=session.get('avatar_url'))
+    return render_template('home.html', game_data=game_data, game_data2=game_data2, username=username)
 
 @app.route("/beaten", methods=["GET"])
 def beaten():
     steamid = session.get('steamid')
     if not steamid:
         return redirect('/index')
+    username = dbHandler.retrieveUsername(steamid)
     list3 = checkfull.getBeaten(steamid)
     list4 = checkfull.getMostPlayed(steamid)
     #i is the item for filling in each column
@@ -156,14 +155,14 @@ def beaten():
                 'playtime_forever': round(value[10]) if value[10] is not None else None,
             }
             game_data4.append(game_data_single4)
-    return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4, avatar_url=session.get('avatar_url'))
+    return render_template('beaten.html', game_data3=game_data3, game_data4=game_data4, username=username)
 
 @app.route("/backlog", methods=["GET"])
 def backlog():
     steamid = session.get('steamid')
     if not steamid:
         return redirect('/index')
-    
+    username = dbHandler.retrieveUsername(steamid)
     list1 = checkfull.getAsc(steamid)
     #i is the item for filling in each column
     game_data = []
@@ -190,7 +189,16 @@ def backlog():
                 'timefromavgmp': value[14]
             })
         game_data.append(game_data_single)
-    return render_template('backlog.html', game_data=game_data, avatar_url=session.get('avatar_url'))
+    return render_template('backlog.html', game_data=game_data, username=username)
+
+@app.route("/settings")
+def settings():
+    steamid = session.get('steamid')
+    if not steamid:
+        return redirect('/index')
+    username = dbHandler.retrieveUsername(steamid)
+    return render_template('settings.html', steamid=steamid, username=username)
+    
 
 @app.route("/logout")
 # Clearing the session so you cannot gain access to other accounts through the url

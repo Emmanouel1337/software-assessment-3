@@ -7,7 +7,6 @@ def insertUser(username, password, email, steamid):
     try:
         c.execute('INSERT INTO users (username, password, email, steamid) VALUES(?, ?, ?, ?)', (username, password, email, steamid))
         conn.commit()
-        conn.close()
         return True
     except sqlite3.IntegrityError:
         return False
@@ -33,11 +32,10 @@ def retrieveSteamId(username, password):
     conn.close()
     return row[0] if row else None
 
-def retrieveAvatar(steamid):
-    conn = sqlite3.connect('player_summaries_db/player_summary.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT avatar FROM player_summaries WHERE steamid = ?", (steamid,))
-    row = cursor.fetchone()
-    cursor.close()
+def retrieveUsername(steamid):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('SELECT username FROM users WHERE steamid = ?', (steamid,))
+    row = c.fetchone()
     conn.close()
-    return row[0] if row else None
+    return row[0] if row else "Username"

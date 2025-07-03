@@ -9,17 +9,17 @@
         </div>
 
         <div class="navbar-box">
-            <div class="pfp">
-                <img src="{{ avatar_url }}" alt="Avatar">
-            </div>
             <div class="navbar">
                 <h3><a href="{{ url_for('home')}}">Home</a></h3>
                 <h3><a href="{{ url_for('beaten')}}">Most Played / Beaten</a></h3>
                 <h3><a href="{{ url_for('backlog')}}">Backlog</a></h3>
+                <h3><a href="{{ url_for('settings')}}">Settings</a></h3>
                 <h3><a href="{{ url_for('logout')}}">Log Out</a></h3>
             </div>
         </div>
         
+        
+
         {% block body %}
         {% endblock %}
     </body>

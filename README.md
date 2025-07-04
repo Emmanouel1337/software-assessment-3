@@ -23,6 +23,15 @@ Or you can run in terminal '''/workspaces/software-assessment-3 (main) $''':
 
 python app.py
 
+As requested I have already created the accounts, their logins are:
+
+User1:
+Username - macro
+Password - macro
+
+User2:
+Username - comet
+Password - comet
 # Using the PWA
 
 Firstly you need to ctrl + click on the link shown in terminal, usually a variation of http://127...
